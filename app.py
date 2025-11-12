@@ -35,24 +35,23 @@ st.write("Upload an image and let the AI classify what it sees!")
 
 st.markdown("---")
 
-col1, col2 = st.columns([1, 1])
+uploaded_file = st.file_uploader(
+    "Choose an image...",
+    type=["jpg", "jpeg", "png"],
+    help="Upload a JPG, JPEG, or PNG image"
+)
 
-with col1:
-    st.subheader("Upload Image")
-    uploaded_file = st.file_uploader(
-        "Choose an image...",
-        type=["jpg", "jpeg", "png"],
-        help="Upload a JPG, JPEG, or PNG image"
-    )
+if uploaded_file is not None:
+    image = Image.open(uploaded_file)
     
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        st.subheader("Uploaded Image")
         st.image(image, caption="Uploaded Image", use_container_width=True)
-
-with col2:
-    st.subheader("Classification Results")
     
-    if uploaded_file is not None:
+    with col2:
+        st.subheader("Classification Results")
         try:
             with st.spinner("Analyzing image..."):
                 model = load_model()
@@ -71,8 +70,8 @@ with col2:
         except Exception as e:
             st.error(f"Error classifying image: {str(e)}")
             st.info("Please try uploading a different image.")
-    else:
-        st.info("Upload an image to see the classification results here.")
+else:
+    st.info("👆 Upload an image above to see classification results!")
 
 st.markdown("---")
 st.caption("Built with TensorFlow, Keras, and Streamlit")
